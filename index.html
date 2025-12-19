@@ -590,8 +590,8 @@
 <div class="sale-dropdown">
 <button class="sale-toggle-btn" type="button">Agent Performance ▾</button>
 <div class="sale-dropdown-menu">
-<a class="active" href="sale-only.html">Agent Team Performance</a>
-<a href="agent-only.html">Agent Performance</a>
+<a href="sale-only.html">Sale Team Performance</a>
+<a  class="active" href="agent-only.html">Agent Performance</a>
 <a href="sale-manager.html">Total (Agent & Agent)</a>
 </div>
 </div>
@@ -1536,6 +1536,37 @@ document.addEventListener('DOMContentLoaded', () => {
   updateAgentCompare();
   updateModelChart();
   updateAgentForkChart();
+});
+</script>
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const dropdowns = document.querySelectorAll('.sale-dropdown');
+
+  dropdowns.forEach(dropdown => {
+    const btn = dropdown.querySelector('.sale-toggle-btn');
+    const menu = dropdown.querySelector('.sale-dropdown-menu');
+
+    if (!btn || !menu) return;
+
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+
+      // close other dropdowns first
+      dropdowns.forEach(d => {
+        if (d !== dropdown) d.classList.remove('open');
+      });
+
+      dropdown.classList.toggle('open');
+    });
+  });
+
+  // click outside -> close all
+  document.addEventListener('click', function () {
+    dropdowns.forEach(d => d.classList.remove('open'));
+  });
 });
 </script>
 
