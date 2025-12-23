@@ -6,8 +6,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Forklift-rental-dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
-</script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <style>
       :root {
@@ -65,16 +64,18 @@
       }
   
       .dashboard-card {
+        position: relative;
         border-radius: 18px;
         box-shadow: 0 2px 12px #b6c6e21a;
         background: #fff;
-        padding: 1.8rem 1.2rem 1.5rem;
+        padding: 2.6rem 1.2rem 1.5rem;
         transition: box-shadow 0.2s, transform 0.1s;
         border: none;
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
+        min-height: 190px;
       }
       .dashboard-card:hover {
         box-shadow: 0 8px 24px #b6c6e23a;
@@ -82,6 +83,10 @@
       }
   
       .icon-bg {
+        position: absolute;
+        left: 50%;
+        top: 0;
+        transform: translate(-50%, -50%);
         width: 52px;
         height: 52px;
         border-radius: 50%;
@@ -89,8 +94,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-top: -32px;
-        margin-bottom: 0.4rem;
         box-shadow: 0 6px 15px rgba(255, 122, 26, 0.35);
         font-size: 1.4rem;
       }
@@ -580,7 +583,33 @@
       .mdrop-item input{width:16px;height:16px;}
       .mdrop-item span{font-size:0.9rem;color:#0f172a;}
 
-    </style>
+    
+      .chart-canvas-wrap{position:relative; height:260px; width:100%;}
+      .chart-canvas-wrap canvas{width:100% !important; height:100% !important;}
+/* ==== FIX: icon not overflow card + align top equally ==== */
+.dashboard-card{
+  position: relative;
+  overflow: hidden;
+  padding-top: 78px; /* space for icon */
+}
+.dashboard-card .icon-bg{
+  top: 14px !important;
+  transform: translateX(-50%) !important; /* keep centered, no Y lift */
+}
+.dashboard-card .stat-value{ margin-top: 10px; }
+/* small screens */
+@media (max-width: 520px){
+  .dashboard-card{ padding-top: 72px; }
+  .dashboard-card .icon-bg{
+    top: 10px !important;
+    width: 46px;
+    height: 46px;
+    font-size: 1.25rem;
+  }
+}
+/* ==== END FIX ==== */
+
+</style>
 </head>
 <body class="h-full">
 <div class="main-wrapper">
@@ -591,32 +620,16 @@
 <button class="sale-toggle-btn" type="button">Agent Performance ▾</button>
 <div class="sale-dropdown-menu">
 <a href="sale-only.html">Sale Team Performance</a>
-<a  class="active" href="agent-only.html">Agent Performance</a>
-<a href="sale-manager.html">Total (Agent & Agent)</a>
+<a class="active" href="agent-only.html">Agent Performance</a>
+<a href="sale-manager.html">Total (Agent &amp; Agent)</a>
 </div>
 </div>
 </div>
 <!-- Stats Grid -->
 <div class="stats-grid">
-<!-- รถยกที่อยู่ในสัญญาบริการ + Breakdown -->
-<div class="dashboard-card text-center">
-<div class="icon-bg"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAEZElEQVR4AexWbYhUZRR+zjuruPbBKvojAg2Xsq/NgugDIrZf6UK4s9uWWZkUKRStZbmzH4Wboc3OamlF6lIgwRI0zoy6bUb+aMH6YYltFhRSllhCHwgZ7miz956e9+6dab6cnRmCQrycc897znve9zz3nPfjGvzHzwUA/68MaF/LRvL2c3I4uFnDwSXa21iTvXS0r/URfaVtZrat3HZ+BpZx4IpzssgqiLyL6TP2aW/bxfTzSbcg5TztKxWJfAD+YGUgrITkMeR5OvwGlUbUOtvYTtP7bNxPrpiKA6g9s0M64gMFHIqtJ6iFjHKavFT7W2+lBFSjlFdpeHEDZUVUHECJKQjqEERfp4sw8AZKYPqZD9k+BQm0eXoFr4oBeHPX1LxB6UJxl0aa66V971kYYRn0PtoroqoAyOroz4xykCxA4EFKlkFYBplfaRmqAuAFFIzAPqrNVqB2bG81ZagegOoBLzCwQDfeM6vaMlQPAPKZD8DAmXqH11a/DP3B6z29jFdxAMlpyzXSsiLDRbaXhOI/cf4TZJJ7M1/IlMFB2buhOADIFq7w7RmWmkF9ry3gBcl9jU6ocpOVmTIIyj6UjD1M0l/KSaaRi5A24Ifxx4t0fOXbrvblP7uhzDIYuDqY+VLgksxEBQ1Zp6821+WYFYd9fa72P3yRl6Xk1E+gegpllsGWYI4/yWRiNv4yx7Wv5WSaeSyn74MA3NOHcdQ5htqzT8IeSmWWwQIYmyxyVr+9AWdQT3N2xuYR0OXsCyK9G8Kt11EvSRbAsTyPFPWvyXaVU5QkjlV7Qb3A4BF6HicvgGOOUP4J0aK7QV9bdKmGW5ZqX7DdAviSzj5JHDD2Gt5Pw9sQ915KOylFHgk+pmUfID1QvERew9QnCOQAzHgT5RDXQgaAXT/8mVnG8u1GsvYX9g8y1kID0S8w8RziJPwidytUrqDpAagZgItVbDvkbEpCXQbHozQ+A0fnU/ZwQT8F1RhEmmHLIHItA3aRh7l+GFR2QHAZFGs5b72EYk2GAz6F9/DrRdvZXGQ7kDxp6/cNjC7mIH+/s9eS2GPY3AnILh5Im6U7cYTyZfrZrNhDqQ7uFDvmDwDryTPJ3XDdebzOb5HOeES64kdpg0HyxoMWDVzHAkmhIz5iO6R3ZJybmm25hllqmvBBvSdTzhICt+DzM8OhYvgahaQa4MhtqHHmEtzt5E3StetH9uWQkd5e10MzxbELzyASDFoPu68BaQIwKmsSv1qfDPfsYToxzC8OMr2PabhtjoZbV4P/B7QNM9hD0hkbku7Yt/Ls7uJrCBOPReu15Lmh3zn4RUCinPRz7uvvAcwCxmljK5/qZm9lhriQ8BaE+190E8dvw9gN7+S7ltIzAKwT67MBYhqZ3g+or4MGGiS05wTbBSQrB1ISSixnmlkiczfcwJUc/4TNaIFzCYPJ75OOnfulM7FWQvE3pTNqF1G+S47upblj50fSFf0up6NMpQBAmeP+NbfzH8BkqfobAAD//wBz+t8AAAAGSURBVAMAo+bAUORC9y0AAAAASUVORK5CYII=" alt="forklift" style="width:30px;height:30px;display:block;"></div>
-<div class="stat-value">38</div>
-<div class="stat-title">รถยกที่อยู่ในสัญญาบริการ</div>
-<div class="stat-breakdown">
-<div class="stat-breakdown-row">
-<span>LPE200</span>
-<span>25 คัน</span>
-</div>
-<div class="stat-breakdown-row">
-<span>LHE150</span>
-<span>13 คัน</span>
-</div>
-</div>
-</div>
 <!-- จำนวนสัญญาทั้งหมด -->
 <div class="dashboard-card text-center">
-<div class="icon-bg"><i class="fas fa-file-contract"></i></div>
+<div class="icon-bg"><i class="fas fa-users"></i></div>
 <div class="stat-value">22</div>
 <div class="stat-title">จำนวนสัญญาทั้งหมด</div>
 <div style="margin-top:0.35rem; font-size:0.8rem; width:100%; max-width:210px;">
@@ -630,32 +643,48 @@
 </div>
 </div>
 </div>
+<!-- รถยกที่อยู่ในสัญญาบริการ + Breakdown -->
+<div class="dashboard-card text-center">
+<div class="icon-bg"><img alt="forklift" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAEZElEQVR4AexWbYhUZRR+zjuruPbBKvojAg2Xsq/NgugDIrZf6UK4s9uWWZkUKRStZbmzH4Wboc3OamlF6lIgwRI0zoy6bUb+aMH6YYltFhRSllhCHwgZ7miz956e9+6dab6cnRmCQrycc897znve9zz3nPfjGvzHzwUA/68MaF/LRvL2c3I4uFnDwSXa21iTvXS0r/URfaVtZrat3HZ+BpZx4IpzssgqiLyL6TP2aW/bxfTzSbcg5TztKxWJfAD+YGUgrITkMeR5OvwGlUbUOtvYTtP7bNxPrpiKA6g9s0M64gMFHIqtJ6iFjHKavFT7W2+lBFSjlFdpeHEDZUVUHECJKQjqEERfp4sw8AZKYPqZD9k+BQm0eXoFr4oBeHPX1LxB6UJxl0aa66V971kYYRn0PtoroqoAyOroz4xykCxA4EFKlkFYBplfaRmqAuAFFIzAPqrNVqB2bG81ZagegOoBLzCwQDfeM6vaMlQPAPKZD8DAmXqH11a/DP3B6z29jFdxAMlpyzXSsiLDRbaXhOI/cf4TZJJ7M1/IlMFB2buhOADIFq7w7RmWmkF9ry3gBcl9jU6ocpOVmTIIyj6UjD1M0l/KSaaRi5A24Ifxx4t0fOXbrvblP7uhzDIYuDqY+VLgksxEBQ1Zp6821+WYFYd9fa72P3yRl6Xk1E+gegpllsGWYI4/yWRiNv4yx7Wv5WSaeSyn74MA3NOHcdQ5htqzT8IeSmWWwQIYmyxyVr+9AWdQT3N2xuYR0OXsCyK9G8Kt11EvSRbAsTyPFPWvyXaVU5QkjlV7Qb3A4BF6HicvgGOOUP4J0aK7QV9bdKmGW5ZqX7DdAviSzj5JHDD2Gt5Pw9sQ915KOylFHgk+pmUfID1QvERew9QnCOQAzHgT5RDXQgaAXT/8mVnG8u1GsvYX9g8y1kID0S8w8RziJPwidytUrqDpAagZgItVbDvkbEpCXQbHozQ+A0fnU/ZwQT8F1RhEmmHLIHItA3aRh7l+GFR2QHAZFGs5b72EYk2GAz6F9/DrRdvZXGQ7kDxp6/cNjC7mIH+/s9eS2GPY3AnILh5Im6U7cYTyZfrZrNhDqQ7uFDvmDwDryTPJ3XDdebzOb5HOeES64kdpg0HyxoMWDVzHAkmhIz5iO6R3ZJybmm25hllqmvBBvSdTzhICt+DzM8OhYvgahaQa4MhtqHHmEtzt5E3StetH9uWQkd5e10MzxbELzyASDFoPu68BaQIwKmsSv1qfDPfsYToxzC8OMr2PabhtjoZbV4P/B7QNM9hD0hkbku7Yt/Ls7uJrCBOPReu15Lmh3zn4RUCinPRz7uvvAcwCxmljK5/qZm9lhriQ8BaE+190E8dvw9gN7+S7ltIzAKwT67MBYhqZ3g+or4MGGiS05wTbBSQrB1ISSixnmlkiczfcwJUc/4TNaIFzCYPJ75OOnfulM7FWQvE3pTNqF1G+S47upblj50fSFf0up6NMpQBAmeP+NbfzH8BkqfobAAD//wBz+t8AAAAGSURBVAMAo+bAUORC9y0AAAAASUVORK5CYII=" style="width:30px;height:30px;display:block;"/></div>
+<div class="stat-value">38</div>
+<div class="stat-title">รถยกที่อยู่ในสัญญาบริการ</div>
+<div class="stat-breakdown">
+<div class="stat-breakdown-row">
+<span>LPE200</span>
+<span>25 คัน</span>
+</div>
+<div class="stat-breakdown-row">
+<span>LHE150</span>
+<span>13 คัน</span>
+</div>
+</div>
+</div>
 <!-- จำนวนรถที่พร้อมให้บริการ -->
 <div class="dashboard-card text-center">
-<div class="icon-bg"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAEZElEQVR4AexWbYhUZRR+zjuruPbBKvojAg2Xsq/NgugDIrZf6UK4s9uWWZkUKRStZbmzH4Wboc3OamlF6lIgwRI0zoy6bUb+aMH6YYltFhRSllhCHwgZ7miz956e9+6dab6cnRmCQrycc897znve9zz3nPfjGvzHzwUA/68MaF/LRvL2c3I4uFnDwSXa21iTvXS0r/URfaVtZrat3HZ+BpZx4IpzssgqiLyL6TP2aW/bxfTzSbcg5TztKxWJfAD+YGUgrITkMeR5OvwGlUbUOtvYTtP7bNxPrpiKA6g9s0M64gMFHIqtJ6iFjHKavFT7W2+lBFSjlFdpeHEDZUVUHECJKQjqEERfp4sw8AZKYPqZD9k+BQm0eXoFr4oBeHPX1LxB6UJxl0aa66V971kYYRn0PtoroqoAyOroz4xykCxA4EFKlkFYBplfaRmqAuAFFIzAPqrNVqB2bG81ZagegOoBLzCwQDfeM6vaMlQPAPKZD8DAmXqH11a/DP3B6z29jFdxAMlpyzXSsiLDRbaXhOI/cf4TZJJ7M1/IlMFB2buhOADIFq7w7RmWmkF9ry3gBcl9jU6ocpOVmTIIyj6UjD1M0l/KSaaRi5A24Ifxx4t0fOXbrvblP7uhzDIYuDqY+VLgksxEBQ1Zp6821+WYFYd9fa72P3yRl6Xk1E+gegpllsGWYI4/yWRiNv4yx7Wv5WSaeSyn74MA3NOHcdQ5htqzT8IeSmWWwQIYmyxyVr+9AWdQT3N2xuYR0OXsCyK9G8Kt11EvSRbAsTyPFPWvyXaVU5QkjlV7Qb3A4BF6HicvgGOOUP4J0aK7QV9bdKmGW5ZqX7DdAviSzj5JHDD2Gt5Pw9sQ915KOylFHgk+pmUfID1QvERew9QnCOQAzHgT5RDXQgaAXT/8mVnG8u1GsvYX9g8y1kID0S8w8RziJPwidytUrqDpAagZgItVbDvkbEpCXQbHozQ+A0fnU/ZwQT8F1RhEmmHLIHItA3aRh7l+GFR2QHAZFGs5b72EYk2GAz6F9/DrRdvZXGQ7kDxp6/cNjC7mIH+/s9eS2GPY3AnILh5Im6U7cYTyZfrZrNhDqQ7uFDvmDwDryTPJ3XDdebzOb5HOeES64kdpg0HyxoMWDVzHAkmhIz5iO6R3ZJybmm25hllqmvBBvSdTzhICt+DzM8OhYvgahaQa4MhtqHHmEtzt5E3StetH9uWQkd5e10MzxbELzyASDFoPu68BaQIwKmsSv1qfDPfsYToxzC8OMr2PabhtjoZbV4P/B7QNM9hD0hkbku7Yt/Ls7uJrCBOPReu15Lmh3zn4RUCinPRz7uvvAcwCxmljK5/qZm9lhriQ8BaE+190E8dvw9gN7+S7ltIzAKwT67MBYhqZ3g+or4MGGiS05wTbBSQrB1ISSixnmlkiczfcwJUc/4TNaIFzCYPJ75OOnfulM7FWQvE3pTNqF1G+S47upblj50fSFf0up6NMpQBAmeP+NbfzH8BkqfobAAD//wBz+t8AAAAGSURBVAMAo+bAUORC9y0AAAAASUVORK5CYII=" alt="forklift" style="width:30px; height:30px; object-fit:contain;"></div>
+<div class="icon-bg"><img alt="forklift" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAEZElEQVR4AexWbYhUZRR+zjuruPbBKvojAg2Xsq/NgugDIrZf6UK4s9uWWZkUKRStZbmzH4Wboc3OamlF6lIgwRI0zoy6bUb+aMH6YYltFhRSllhCHwgZ7miz956e9+6dab6cnRmCQrycc897znve9zz3nPfjGvzHzwUA/68MaF/LRvL2c3I4uFnDwSXa21iTvXS0r/URfaVtZrat3HZ+BpZx4IpzssgqiLyL6TP2aW/bxfTzSbcg5TztKxWJfAD+YGUgrITkMeR5OvwGlUbUOtvYTtP7bNxPrpiKA6g9s0M64gMFHIqtJ6iFjHKavFT7W2+lBFSjlFdpeHEDZUVUHECJKQjqEERfp4sw8AZKYPqZD9k+BQm0eXoFr4oBeHPX1LxB6UJxl0aa66V971kYYRn0PtoroqoAyOroz4xykCxA4EFKlkFYBplfaRmqAuAFFIzAPqrNVqB2bG81ZagegOoBLzCwQDfeM6vaMlQPAPKZD8DAmXqH11a/DP3B6z29jFdxAMlpyzXSsiLDRbaXhOI/cf4TZJJ7M1/IlMFB2buhOADIFq7w7RmWmkF9ry3gBcl9jU6ocpOVmTIIyj6UjD1M0l/KSaaRi5A24Ifxx4t0fOXbrvblP7uhzDIYuDqY+VLgksxEBQ1Zp6821+WYFYd9fa72P3yRl6Xk1E+gegpllsGWYI4/yWRiNv4yx7Wv5WSaeSyn74MA3NOHcdQ5htqzT8IeSmWWwQIYmyxyVr+9AWdQT3N2xuYR0OXsCyK9G8Kt11EvSRbAsTyPFPWvyXaVU5QkjlV7Qb3A4BF6HicvgGOOUP4J0aK7QV9bdKmGW5ZqX7DdAviSzj5JHDD2Gt5Pw9sQ915KOylFHgk+pmUfID1QvERew9QnCOQAzHgT5RDXQgaAXT/8mVnG8u1GsvYX9g8y1kID0S8w8RziJPwidytUrqDpAagZgItVbDvkbEpCXQbHozQ+A0fnU/ZwQT8F1RhEmmHLIHItA3aRh7l+GFR2QHAZFGs5b72EYk2GAz6F9/DrRdvZXGQ7kDxp6/cNjC7mIH+/s9eS2GPY3AnILh5Im6U7cYTyZfrZrNhDqQ7uFDvmDwDryTPJ3XDdebzOb5HOeES64kdpg0HyxoMWDVzHAkmhIz5iO6R3ZJybmm25hllqmvBBvSdTzhICt+DzM8OhYvgahaQa4MhtqHHmEtzt5E3StetH9uWQkd5e10MzxbELzyASDFoPu68BaQIwKmsSv1qfDPfsYToxzC8OMr2PabhtjoZbV4P/B7QNM9hD0hkbku7Yt/Ls7uJrCBOPReu15Lmh3zn4RUCinPRz7uvvAcwCxmljK5/qZm9lhriQ8BaE+190E8dvw9gN7+S7ltIzAKwT67MBYhqZ3g+or4MGGiS05wTbBSQrB1ISSixnmlkiczfcwJUc/4TNaIFzCYPJ75OOnfulM7FWQvE3pTNqF1G+S47upblj50fSFf0up6NMpQBAmeP+NbfzH8BkqfobAAD//wBz+t8AAAAGSURBVAMAo+bAUORC9y0AAAAASUVORK5CYII=" style="width:30px; height:30px; object-fit:contain;"/></div>
 <div class="stat-value">45</div>
 <div class="stat-title">จำนวนรถที่พร้อมให้บริการ</div>
 </div>
-<!-- ลูกค้าทั้งหมด -->
+<!-- บัญชีทั้งหมด -->
 <div class="dashboard-card text-center">
 <div class="icon-bg">☰</div>
 <div class="stat-value">155</div>
-<div class="stat-title">ลูกค้าทั้งหมด</div>
+<div class="stat-title">บัญชีทั้งหมด</div>
 <div class="stat-breakdown">
 <div class="stat-breakdown-row">
-<span>บัญชีนิติบุคคล</span>
-<span>100</span>
+<span>บัญชีลีด</span>
+<span>0</span>
 </div>
 <div class="stat-breakdown-row">
 <span>บัญชีบุคคลธรรมดา</span>
-<span>20</span>
+<span>100</span>
 </div>
 </div>
 </div>
 </div>
 <!-- สรุปข้อมูลการเช่า : Compare Agent + Date Range -->
-<div class="card" id="monthly-sale-summary" style="max-width: 1400px; margin: 0 auto; background-color: #F7FFFF;">
-<h2 class="card-title">สรุปข้อมูลการเช่า</h2>
+<div class="card" id="monthly-sale-summary" style="max-width: 1400px; margin: 0 auto; background-color: #FFFFFF;">
+<h2 class="card-title">สรุปข้อมูลการเช่า (ใบเสนอราคาเทียบสัญญาบริการ)</h2>
 <p style="font-size: 0.85rem; color: var(--muted-text); margin-top: -0.25rem; margin-bottom: 0.9rem;">
     เปรียบเทียบผลงานของ Agent ตามช่วงวันที่ที่เลือก (รวมจำนวนใบเสนอราคา และจำนวนสัญญาบริการ)
   </p>
@@ -730,60 +759,125 @@
 </div>
 </div>
 <!-- Charts -->
+<div class="card" id="monthly-forklift-summary" style="max-width: 1400px; margin: 0 auto; margin-top: 15px;">
+<h2 class="card-title">สรุปข้อมูลการเช่า (รถยกในใบเสนอราคาเทียบรถยกในสัญญาบริการ)</h2>
+<p style="font-size: 0.85rem; color: var(--muted-text); margin-top: -0.25rem; margin-bottom: 0.9rem;">
+    เปรียบเทียบจำนวนรถยกตามช่วงวันที่ที่เลือก (รวมจำนวนรถยกในใบเสนอราคา และจำนวนรถยกในสัญญาบริการ) — อ้างอิงจาก “สรุปช่วงวันที่เลือก (รวมทีม)”
+  </p>
+<!-- Filters (Forklift summary) -->
+<div style="display:flex; flex-wrap:wrap; gap:0.75rem; align-items:flex-end; margin-bottom:1rem;">
+<div style="min-width:220px;">
+<div style="font-size:0.78rem; color:var(--muted-text); margin-bottom:0.35rem;">เลือกช่วงวันเริ่มต้น</div>
+<input id="forkliftStartDate" style="width:100%; padding:0.55rem 0.75rem; border-radius:10px; border:1px solid #e5e7eb; font-family:'Prompt',sans-serif;" type="date"/>
+</div>
+<div style="min-width:220px;">
+<div style="font-size:0.78rem; color:var(--muted-text); margin-bottom:0.35rem;">เลือกช่วงวันสิ้นสุด</div>
+<input id="forkliftEndDate" style="width:100%; padding:0.55rem 0.75rem; border-radius:10px; border:1px solid #e5e7eb; font-family:'Prompt',sans-serif;" type="date"/>
+</div>
+<div style="min-width:260px; flex:1;">
+<div style="font-size:0.78rem; color:var(--muted-text); margin-bottom:0.35rem;">เลือก Agent (เลือกได้หลายคน)</div>
+<!-- Hidden native select (kept for logic) -->
+<select id="forkliftMultiSelect" multiple="" style="display:none;"></select>
+<!-- Dropdown checkbox multi-select -->
+<div class="mdrop" id="forkliftDropdown">
+<button aria-expanded="false" aria-haspopup="listbox" class="mdrop-btn" id="forkliftDropdownBtn" type="button">
+        เลือก Agent
+        <span class="mdrop-caret">▾</span>
+</button>
+<div aria-multiselectable="true" class="mdrop-panel" id="forkliftDropdownPanel" role="listbox">
+<div class="mdrop-actions">
+<button class="mdrop-action" id="forkliftSelectAllBtn" type="button">เลือกทั้งหมด</button>
+<button class="mdrop-action" id="forkliftClearBtn" type="button">ล้าง</button>
+</div>
+<div class="mdrop-list" id="forkliftDropdownList"></div>
+</div>
+</div>
+</div>
+<div style="display:flex; gap:0.5rem; align-items:flex-end;">
+<button class="card-link-btn" id="forkliftUpdateBtn" type="button">อัปเดตกราฟ</button>
+<button class="mdrop-action" id="forkliftResetBtn" style="padding:0.45rem 1.1rem; height:38px;" type="button">รีเซ็ต</button>
+</div>
+</div>
+<!-- Summary chips -->
+<div id="forkliftSummaryChips" style="display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:0.75rem; margin-bottom: 1rem;"></div>
+<!-- Chart: Compare forklift in quotation vs contract -->
+<div class="chart-card" style="background:#ffffff; border:1px solid #e5edf8; margin-top:1rem;">
+<div class="chart-title">กราฟเปรียบเทียบจำนวนรถยก (ใบเสนอราคา vs สัญญาบริการ)</div>
+<div class="chart-subtitle">รวมตามช่วงวันที่ที่เลือก สำหรับ Sale ที่เลือก</div>
+<div style="position:relative; min-height:260px;">
+<div class="chart-canvas-wrap"><canvas id="forkliftCompareChart"></canvas></div>
+<div id="forkliftCompareFallback" style="margin-top:0.75rem;"></div>
+</div>
+</div>
+<!-- Table -->
+<div style="overflow:auto; border:1px solid #e5edf8; border-radius: 12px;">
+<table class="simple-table" style="min-width:760px;">
+<thead>
+<tr>
+<th style="text-align:center; width:60px;">ลำดับ</th>
+<th>Agent</th>
+<th style="text-align:right;">จำนวนรถยกในใบเสนอราคา</th>
+<th style="text-align:right;">จำนวนรถยกในสัญญาบริการ</th>
+<th style="text-align:right;">อัตราสำเร็จ (%)</th>
+</tr>
+</thead>
+<tbody id="forkliftSummaryTbody"></tbody>
+</table>
+</div>
+</div>
 <div class="card" style="max-width: 1400px; margin: 0 auto; margin-top: 15px;">
 <h2 class="card-title">กราฟสรุปรุ่นรถยกที่ทำสัญญา และจำนวนรถยกของลูกค้าที่ทำสัญญากับ Agent</h2>
 <p style="font-size:0.8rem; color:var(--muted-text); margin-top:-0.2rem; margin-bottom:0.6rem;">
             มองภาพรวม “รุ่นรถยกที่ทำสัญญา” และ “จำนวนรถยกของลูกค้าที่ทำสัญญากับ Agent” (ตัวอย่างข้อมูลจำลอง)</p>
 <div class="chart-grid">
-  <!-- ซ้าย: กราฟสรุปจำนวนสัญญา -->
-  <div class="chart-card">
-    <div class="card-title" style="font-size:0.9rem;">กราฟสรุปรุ่นรถยกที่ทำสัญญา</div>
-    <div class="chart-filters">
-      <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
-        <div style="display:flex; flex-direction:column; gap:0.25rem;">
-          <div style="font-size:0.75rem; color:var(--muted-text);">ช่วงวันเริ่ม (Start)</div>
-          <input id="modelStartDate" type="date" style="padding:0.45rem 0.7rem; border-radius:0.6rem; border:1px solid #e5e7eb; width:170px; font-family:'Prompt',sans-serif;">
-        </div>
-        <div style="display:flex; flex-direction:column; gap:0.25rem;">
-          <div style="font-size:0.75rem; color:var(--muted-text);">ช่วงวันสิ้นสุด (End)</div>
-          <input id="modelEndDate" type="date" style="padding:0.45rem 0.7rem; border-radius:0.6rem; border:1px solid #e5e7eb; width:170px; font-family:'Prompt',sans-serif;">
-        </div>
-      </div>
+<!-- ซ้าย: กราฟสรุปจำนวนสัญญา -->
+<div class="chart-card">
+<div class="card-title" style="font-size:0.9rem;">กราฟสรุปรุ่นรถยกที่ทำสัญญา</div>
+<div class="chart-filters">
+<div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
+<div style="display:flex; flex-direction:column; gap:0.25rem;">
+<div style="font-size:0.75rem; color:var(--muted-text);">ช่วงวันเริ่ม (Start)</div>
+<input id="modelStartDate" style="padding:0.45rem 0.7rem; border-radius:0.6rem; border:1px solid #e5e7eb; width:170px; font-family:'Prompt',sans-serif;" type="date"/>
 </div>
-    <div style="position:relative; min-height:220px; margin-top: 55px;">
-      <canvas id="modelHoursChart"></canvas>
-    </div>
-  </div>
-
-  <!-- ขวา: กราฟสรุปการชำระเงินแพ็ค/ชม. (แท่งสีส้ม) -->
-  <div class="chart-card">
-    <div class="card-title" style="font-size:0.9rem;">กราฟจำนวนรถยกของลูกค้าที่ทำสัญญากับ Agent</div>
-    <div class="chart-subtitle" style="margin-top:-0.35rem;">
+<div style="display:flex; flex-direction:column; gap:0.25rem;">
+<div style="font-size:0.75rem; color:var(--muted-text);">ช่วงวันสิ้นสุด (End)</div>
+<input id="modelEndDate" style="padding:0.45rem 0.7rem; border-radius:0.6rem; border:1px solid #e5e7eb; width:170px; font-family:'Prompt',sans-serif;" type="date"/>
+</div>
+</div>
+</div>
+<div style="position:relative; min-height:220px; margin-top: 55px;">
+<canvas id="modelHoursChart"></canvas>
+</div>
+</div>
+<!-- ขวา: กราฟสรุปการชำระเงินแพ็ค/ชม. (แท่งสีส้ม) -->
+<div class="chart-card">
+<div class="card-title" style="font-size:0.9rem;">กราฟจำนวนรถยกของลูกค้าที่ทำสัญญากับ Agent</div>
+<div class="chart-subtitle" style="margin-top:-0.35rem;">
       แสดงจำนวนรถยกที่ทำสัญญา แยกตาม Agent (ตัวอย่างข้อมูลจำลอง) ตามช่วงวันที่และ Agent ที่เลือก
     </div>
-    <div class="chart-filters" style="margin-top: 8px;">
-      <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
-        <div style="display:flex; flex-direction:column; gap:0.25rem;">
-          <div style="font-size:0.75rem; color:var(--muted-text);">ช่วงวันเริ่ม (Start)</div>
-          <input id="saleForkStartDate" type="date" style="width:100%; padding:0.55rem 0.75rem; border-radius:10px; border:1px solid #e5e7eb; width:170px; font-family:'Prompt',sans-serif;">
-        </div>
-        <div style="display:flex; flex-direction:column; gap:0.25rem;">
-          <div style="font-size:0.75rem; color:var(--muted-text);">ช่วงวันสิ้นสุด (End)</div>
-          <input id="saleForkEndDate" type="date" style="width:100%; padding:0.55rem 0.75rem; border-radius:10px; border:1px solid #e5e7eb; width:170px; font-family:'Prompt',sans-serif;">
-        </div>
-        <div style="display:flex; flex-direction:column; gap:0.25rem; min-width:240px; flex:1;">
-          <div style="font-size:0.75rem; color:var(--muted-text);">Agent</div>
-          <select id="saleForkAgentFilter" style="padding:0.45rem 0.7rem; border-radius:0.6rem; border:1px solid #e5e7eb; width:100%; font-family:'Prompt',sans-serif;">
-            <option value="__use_main__" selected>ตาม Agent ที่เลือกด้านบน</option>
-            <option value="ALL">ทุก Agent</option>
-          </select>
-        </div>
-      </div>
-    </div>
-    <div style="position:relative; min-height:220px; margin-top: 30px;">
-      <canvas id="saleForkliftChart"></canvas>
-    </div>
-  </div>
+<div class="chart-filters" style="margin-top: 8px;">
+<div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
+<div style="display:flex; flex-direction:column; gap:0.25rem;">
+<div style="font-size:0.75rem; color:var(--muted-text);">ช่วงวันเริ่ม (Start)</div>
+<input id="saleForkStartDate" style="width:100%; padding:0.55rem 0.75rem; border-radius:10px; border:1px solid #e5e7eb; width:170px; font-family:'Prompt',sans-serif;" type="date"/>
+</div>
+<div style="display:flex; flex-direction:column; gap:0.25rem;">
+<div style="font-size:0.75rem; color:var(--muted-text);">ช่วงวันสิ้นสุด (End)</div>
+<input id="saleForkEndDate" style="width:100%; padding:0.55rem 0.75rem; border-radius:10px; border:1px solid #e5e7eb; width:170px; font-family:'Prompt',sans-serif;" type="date"/>
+</div>
+<div style="display:flex; flex-direction:column; gap:0.25rem; min-width:240px; flex:1;">
+<div style="font-size:0.75rem; color:var(--muted-text);">Agent</div>
+<select id="saleForkAgentFilter" style="padding:0.45rem 0.7rem; border-radius:0.6rem; border:1px solid #e5e7eb; width:100%; font-family:'Prompt',sans-serif;">
+<option selected="" value="__use_main__">ตาม Agent ที่เลือกด้านบน</option>
+<option value="ALL">ทุก Agent</option>
+</select>
+</div>
+</div>
+</div>
+<div style="position:relative; min-height:220px; margin-top: 30px;">
+<canvas id="saleForkliftChart"></canvas>
+</div>
+</div>
 </div>
 </div>
 <!-- Active contracts + Pending -->
@@ -1025,522 +1119,872 @@
 </div>
 </div> </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+
 document.addEventListener('DOMContentLoaded', () => {
-  const hasChart = typeof window.Chart !== 'undefined';
-
-  // ========= Helpers =========
-  const pad2 = (n) => String(n).padStart(2, '0');
-  const toYMD = (d) => `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
-  const safeDate = (v) => {
-    if (!v) return null;
-    const d = new Date(v);
-    return isNaN(d.getTime()) ? null : d;
+  const ensureChartJs = (done) => {
+    if (window.Chart) return done(true);
+    const sc = document.createElement('script');
+    sc.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+    sc.onload = () => done(true);
+    sc.onerror = () => done(false);
+    document.head.appendChild(sc);
   };
 
-  const monthKey = (d) => `${d.getFullYear()}-${pad2(d.getMonth()+1)}`;
-  const monthRangeKeys = (startDateStr, endDateStr) => {
-    const s = safeDate(startDateStr);
-    const e = safeDate(endDateStr);
-    if (!s || !e) return [];
-    const start = new Date(Math.min(s.getTime(), e.getTime()));
-    const end = new Date(Math.max(s.getTime(), e.getTime()));
-    const cur = new Date(start.getFullYear(), start.getMonth(), 1);
-    const last = new Date(end.getFullYear(), end.getMonth(), 1);
-    const keys = [];
-    while (cur <= last) {
-      keys.push(`${cur.getFullYear()}-${pad2(cur.getMonth()+1)}`);
-      cur.setMonth(cur.getMonth() + 1);
-    }
-    return keys;
-  };
+  ensureChartJs(() => {
 
-  const formatRange = (startDateStr, endDateStr) => {
-    const s = safeDate(startDateStr);
-    const e = safeDate(endDateStr);
-    if (!s || !e) return '';
-    const ss = new Date(Math.min(s.getTime(), e.getTime()));
-    const ee = new Date(Math.max(s.getTime(), e.getTime()));
-    const sTxt = `${pad2(ss.getDate())}/${pad2(ss.getMonth()+1)}/${ss.getFullYear()}`;
-    const eTxt = `${pad2(ee.getDate())}/${pad2(ee.getMonth()+1)}/${ee.getFullYear()}`;
-    return `${sTxt} - ${eTxt}`;
-  };
+        const hasChart = typeof window.Chart !== 'undefined';
 
-  // ========= Mock data (stable) =========
-  // saleMonthly: { saleName: { 'YYYY-MM': { c: quotations, u: services } } }
-  const sales = ['Agent A','Agent B','Agent C','Agent D','Agent E'];
-  const saleMonthly = (() => {
-    const obj = {};
-    sales.forEach((s) => (obj[s] = {}));
-    const years = [2024, 2025];
-    years.forEach((y) => {
-      for (let m = 1; m <= 12; m++) {
-        const mk = `${y}-${pad2(m)}`;
-        sales.forEach((s, si) => {
-          // Deterministic pattern (no random)
-          const base = ((y - 2023) * 7 + m * 3 + si * 5) % 12;
-          const services = Math.max(1, 3 + (base % 7));          // 3..9
-          const quotations = Math.max(services, services + (base % 4) + 1); // >= services
-          obj[s][mk] = { c: quotations, u: services };
-        });
-      }
-    });
-    return obj;
-  })();
+      // ========= Helpers =========
+      const pad2 = (n) => String(n).padStart(2, '0');
+      const toYMD = (d) => `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+      const safeDate = (v) => {
+        if (!v) return null;
+        const d = new Date(v);
+        return isNaN(d.getTime()) ? null : d;
+      };
 
-  // transactions for forklift-by-sale-by-model chart
-  const forkliftModels = ['LHE','LPE','RRE'];
-  const saleForkTx = (() => {
-    const tx = [];
-    const years = [2024, 2025];
-    const days = [3, 12, 24];
-    years.forEach((y, yi) => {
-      for (let m = 1; m <= 12; m++) {
-        sales.forEach((sale, si) => {
-          forkliftModels.forEach((model, mi) => {
-            const base = (yi * 11 + m * 3 + si * 4 + mi * 5) % 9 + 1;
-            const boost = model === 'LHE' ? 2 : 0;
-            const qty = base + boost; // 3..12-ish
-            days.forEach((d, di) => {
-              const portion = di === 0 ? 0.40 : di === 1 ? 0.35 : 0.25;
-              const q = Math.max(1, Math.round(qty * portion));
-              tx.push({ date: `${y}-${pad2(m)}-${pad2(d)}`, sale, model, qty: q });
+      const monthKey = (d) => `${d.getFullYear()}-${pad2(d.getMonth()+1)}`;
+      const monthRangeKeys = (startDateStr, endDateStr) => {
+        const s = safeDate(startDateStr);
+        const e = safeDate(endDateStr);
+        if (!s || !e) return [];
+        const start = new Date(Math.min(s.getTime(), e.getTime()));
+        const end = new Date(Math.max(s.getTime(), e.getTime()));
+        const cur = new Date(start.getFullYear(), start.getMonth(), 1);
+        const last = new Date(end.getFullYear(), end.getMonth(), 1);
+        const keys = [];
+        while (cur <= last) {
+          keys.push(`${cur.getFullYear()}-${pad2(cur.getMonth()+1)}`);
+          cur.setMonth(cur.getMonth() + 1);
+        }
+        return keys;
+      };
+
+      const formatRange = (startDateStr, endDateStr) => {
+        const s = safeDate(startDateStr);
+        const e = safeDate(endDateStr);
+        if (!s || !e) return '';
+        const ss = new Date(Math.min(s.getTime(), e.getTime()));
+        const ee = new Date(Math.max(s.getTime(), e.getTime()));
+        const sTxt = `${pad2(ss.getDate())}/${pad2(ss.getMonth()+1)}/${ss.getFullYear()}`;
+        const eTxt = `${pad2(ee.getDate())}/${pad2(ee.getMonth()+1)}/${ee.getFullYear()}`;
+        return `${sTxt} - ${eTxt}`;
+      };
+
+      // ========= Mock data (stable) =========
+      // saleMonthly: { saleName: { 'YYYY-MM': { c: quotations, u: services } } }
+      const sales = ['Agent A','Agent B','Agent C','Agent D','Agent E'];
+      const saleMonthly = (() => {
+        const obj = {};
+        sales.forEach((s) => (obj[s] = {}));
+        const years = [2024, 2025];
+        years.forEach((y) => {
+          for (let m = 1; m <= 12; m++) {
+            const mk = `${y}-${pad2(m)}`;
+            sales.forEach((s, si) => {
+              // Deterministic pattern (no random)
+              const base = ((y - 2023) * 7 + m * 3 + si * 5) % 12;
+              const services = Math.max(1, 3 + (base % 7));          // 3..9
+              const quotations = Math.max(services, services + (base % 4) + 1); // >= services
+              obj[s][mk] = { c: quotations, u: services };
             });
-          });
+          }
+        });
+        return obj;
+      })();
+
+      // transactions for forklift-by-sale-by-model chart
+      const forkliftModels = ['LHE','LPE','RRE'];
+      const saleForkTx = (() => {
+        const tx = [];
+        const years = [2024, 2025];
+        const days = [3, 12, 24];
+        years.forEach((y, yi) => {
+          for (let m = 1; m <= 12; m++) {
+            sales.forEach((sale, si) => {
+              forkliftModels.forEach((model, mi) => {
+                const base = (yi * 11 + m * 3 + si * 4 + mi * 5) % 9 + 1;
+                const boost = model === 'LHE' ? 2 : 0;
+                const qty = base + boost; // 3..12-ish
+                days.forEach((d, di) => {
+                  const portion = di === 0 ? 0.40 : di === 1 ? 0.35 : 0.25;
+                  const q = Math.max(1, Math.round(qty * portion));
+                  tx.push({ date: `${y}-${pad2(m)}-${pad2(d)}`, sale, model, qty: q });
+                });
+              });
+            });
+          }
+        });
+        return tx;
+      })();
+
+
+
+      // Quotation forklift transactions (mock data) - used for forklift quotation vs service success
+      const quoteForkTx = (() => {
+        const tx = [];
+        const years = [2024, 2025];
+        const days = [2, 10, 22];
+        years.forEach((y, yi) => {
+          for (let m = 1; m <= 12; m++) {
+            sales.forEach((sale, si) => {
+              forkliftModels.forEach((model, mi) => {
+                const base = (yi * 13 + m * 4 + si * 5 + mi * 6) % 10 + 3;
+                const boost = model === 'LHE' ? 3 : 0;
+                const qty = base + boost; // 6..16-ish (usually >= contracts)
+                days.forEach((d, di) => {
+                  const portion = di === 0 ? 0.42 : di === 1 ? 0.33 : 0.25;
+                  const q = Math.max(1, Math.round(qty * portion));
+                  tx.push({ date: `${y}-${pad2(m)}-${pad2(d)}`, sale, model, qty: q });
+                });
+              });
+            });
+          }
+        });
+        return tx;
+      })();
+
+    // ========= Section 1: Agent Compare (Summary) =========
+      const startEl = document.getElementById('saleStartDate');
+      const endEl = document.getElementById('saleEndDate');
+      const applyBtn = document.getElementById('saleApplyBtn');
+      const resetBtn = document.getElementById('saleResetBtn');
+      const saleCanvas = document.getElementById('saleCompareChart');
+      const chipsEl = document.getElementById('saleSummaryChips');
+      const rangeEl = document.getElementById('saleTableRange');
+      const tableBody = document.querySelector('#saleSummaryTable tbody');
+
+      // hidden select used for logic
+      const saleSelect = document.getElementById('saleMultiSelect');
+
+      // checkbox dropdown UI
+      const saleMultiDropdown = document.getElementById('saleDropdown');
+      const saleDropdownBtn = document.getElementById('saleDropdownBtn');
+      const saleDropdownPanel = document.getElementById('saleDropdownPanel');
+      const saleDropdownList = document.getElementById('saleDropdownList');
+      const saleSelectAllBtn = document.getElementById('saleSelectAll');
+      const saleClearAllBtn = document.getElementById('saleClearAll');
+
+      function populateHiddenAgentSelect() {
+        if (!saleSelect) return;
+        saleSelect.innerHTML = '';
+        Object.keys(saleMonthly).forEach((name) => {
+          const opt = document.createElement('option');
+          opt.value = name;
+          opt.textContent = name;
+          opt.selected = true; // default: all selected
+          saleSelect.appendChild(opt);
         });
       }
-    });
-    return tx;
-  })();
 
-  // ========= Section 1: Agent Compare (Summary) =========
-  const startEl = document.getElementById('saleStartDate');
-  const endEl = document.getElementById('saleEndDate');
-  const applyBtn = document.getElementById('saleApplyBtn');
-  const resetBtn = document.getElementById('saleResetBtn');
-  const saleCanvas = document.getElementById('saleCompareChart');
-  const chipsEl = document.getElementById('saleSummaryChips');
-  const rangeEl = document.getElementById('saleTableRange');
-  const tableBody = document.querySelector('#saleSummaryTable tbody');
+      function getSelectedAgents() {
+        if (!saleSelect) return Object.keys(saleMonthly);
+        const vals = Array.from(saleSelect.selectedOptions || []).map(o => o.value).filter(Boolean);
+        return vals.length ? vals : Object.keys(saleMonthly);
+      }
 
-  // hidden select used for logic
-  const saleSelect = document.getElementById('saleMultiSelect');
+      function updateAgentDropdownLabel() {
+        if (!saleDropdownBtn || !saleSelect) return;
+        const total = saleSelect.options.length;
+        const selected = Array.from(saleSelect.options).filter(o => o.selected).length;
+        const effective = selected === 0 ? total : selected;
+        const label = (effective === total) ? 'เลือก Agent (ทั้งหมด)' : `เลือก Agent (${effective} รายการ)`;
+        saleDropdownBtn.innerHTML = `${label} <span class="mdrop-caret">▾</span>`;
+      }
 
-  // checkbox dropdown UI
-  const saleMultiDropdown = document.getElementById('saleDropdown');
-  const saleDropdownBtn = document.getElementById('saleDropdownBtn');
-  const saleDropdownPanel = document.getElementById('saleDropdownPanel');
-  const saleDropdownList = document.getElementById('saleDropdownList');
-  const saleSelectAllBtn = document.getElementById('saleSelectAll');
-  const saleClearAllBtn = document.getElementById('saleClearAll');
+      function initAgentDropdown() {
+        if (!saleMultiDropdown || !saleDropdownBtn || !saleDropdownPanel || !saleDropdownList || !saleSelect) return;
 
-  function populateHiddenAgentSelect() {
-    if (!saleSelect) return;
-    saleSelect.innerHTML = '';
-    Object.keys(saleMonthly).forEach((name) => {
-      const opt = document.createElement('option');
-      opt.value = name;
-      opt.textContent = name;
-      opt.selected = true; // default: all selected
-      saleSelect.appendChild(opt);
-    });
-  }
+        saleDropdownList.innerHTML = '';
+        Array.from(saleSelect.options).forEach((opt) => {
+          const row = document.createElement('label');
+          row.className = 'mdrop-item';
 
-  function getSelectedAgents() {
-    if (!saleSelect) return Object.keys(saleMonthly);
-    const vals = Array.from(saleSelect.selectedOptions || []).map(o => o.value).filter(Boolean);
-    return vals.length ? vals : Object.keys(saleMonthly);
-  }
+          const cb = document.createElement('input');
+          cb.type = 'checkbox';
+          cb.checked = !!opt.selected;
+          cb.dataset.value = opt.value;
 
-  function updateAgentDropdownLabel() {
-    if (!saleDropdownBtn || !saleSelect) return;
-    const total = saleSelect.options.length;
-    const selected = Array.from(saleSelect.options).filter(o => o.selected).length;
-    const effective = selected === 0 ? total : selected;
-    const label = (effective === total) ? 'เลือก Agent (ทั้งหมด)' : `เลือก Agent (${effective} รายการ)`;
-    saleDropdownBtn.innerHTML = `${label} <span class="mdrop-caret">▾</span>`;
-  }
+          const txt = document.createElement('span');
+          txt.textContent = opt.textContent;
 
-  function initAgentDropdown() {
-    if (!saleMultiDropdown || !saleDropdownBtn || !saleDropdownPanel || !saleDropdownList || !saleSelect) return;
+          cb.addEventListener('change', () => {
+            const o = Array.from(saleSelect.options).find(x => x.value === cb.dataset.value);
+            if (o) o.selected = cb.checked;
+            updateAgentDropdownLabel();
+            updateAgentCompare();
+            updateAgentForkChart(); // keep charts synced
+          });
 
-    saleDropdownList.innerHTML = '';
-    Array.from(saleSelect.options).forEach((opt) => {
-      const row = document.createElement('label');
-      row.className = 'mdrop-item';
+          row.appendChild(cb);
+          row.appendChild(txt);
+          saleDropdownList.appendChild(row);
+        });
 
-      const cb = document.createElement('input');
-      cb.type = 'checkbox';
-      cb.checked = !!opt.selected;
-      cb.dataset.value = opt.value;
-
-      const txt = document.createElement('span');
-      txt.textContent = opt.textContent;
-
-      cb.addEventListener('change', () => {
-        const o = Array.from(saleSelect.options).find(x => x.value === cb.dataset.value);
-        if (o) o.selected = cb.checked;
         updateAgentDropdownLabel();
-        updateAgentCompare();
-        updateAgentForkChart(); // keep charts synced
-      });
 
-      row.appendChild(cb);
-      row.appendChild(txt);
-      saleDropdownList.appendChild(row);
-    });
+        const close = () => {
+          saleMultiDropdown.classList.remove('open');
+          saleDropdownBtn.setAttribute('aria-expanded', 'false');
+        };
+        const open = () => {
+          saleMultiDropdown.classList.add('open');
+          saleDropdownBtn.setAttribute('aria-expanded', 'true');
+        };
 
-    updateAgentDropdownLabel();
+        saleDropdownBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (saleMultiDropdown.classList.contains('open')) close(); else open();
+        });
+        saleDropdownPanel.addEventListener('click', (e) => e.stopPropagation());
+        document.addEventListener('click', () => close());
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
 
-    const close = () => {
-      saleMultiDropdown.classList.remove('open');
-      saleDropdownBtn.setAttribute('aria-expanded', 'false');
-    };
-    const open = () => {
-      saleMultiDropdown.classList.add('open');
-      saleDropdownBtn.setAttribute('aria-expanded', 'true');
-    };
+        if (saleSelectAllBtn) {
+          saleSelectAllBtn.addEventListener('click', () => {
+            Array.from(saleSelect.options).forEach(o => o.selected = true);
+            Array.from(saleDropdownList.querySelectorAll('input[type=checkbox]')).forEach(cb => cb.checked = true);
+            updateAgentDropdownLabel();
+            updateAgentCompare();
+            updateAgentForkChart();
+          });
+        }
+        if (saleClearAllBtn) {
+          saleClearAllBtn.addEventListener('click', () => {
+            Array.from(saleSelect.options).forEach(o => o.selected = false);
+            Array.from(saleDropdownList.querySelectorAll('input[type=checkbox]')).forEach(cb => cb.checked = false);
+            updateAgentDropdownLabel();
+            updateAgentCompare();
+            updateAgentForkChart();
+          });
+        }
+      }
 
-    saleDropdownBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (saleMultiDropdown.classList.contains('open')) close(); else open();
-    });
-    saleDropdownPanel.addEventListener('click', (e) => e.stopPropagation());
-    document.addEventListener('click', () => close());
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+      function sumByAgent(saleName, keys) {
+        let quotations = 0;
+        let services = 0;
+        const map = saleMonthly[saleName] || {};
+        keys.forEach((k) => {
+          const row = map[k];
+          if (!row) return;
+          const c = row.c || 0;
+          const u = row.u || 0;
+          quotations += Math.max(c, u);
+          services += Math.min(c, u);
+        });
+        return { sale: saleName, quotations, services };
+      }
 
-    if (saleSelectAllBtn) {
-      saleSelectAllBtn.addEventListener('click', () => {
-        Array.from(saleSelect.options).forEach(o => o.selected = true);
-        Array.from(saleDropdownList.querySelectorAll('input[type=checkbox]')).forEach(cb => cb.checked = true);
+      function renderChips(rows) {
+        if (!chipsEl) return;
+        const totalQ = rows.reduce((a, r) => a + r.quotations, 0);
+        const totalS = rows.reduce((a, r) => a + r.services, 0);
+        const avgQ = rows.length ? (totalQ / rows.length) : 0;
+        const avgS = rows.length ? (totalS / rows.length) : 0;
+        const successRate = totalQ ? ((totalS / totalQ) * 100) : 0;
+        const top = rows.slice().sort((a, b) => b.quotations - a.quotations)[0];
+        const topText = top ? `${top.sale} 🏆 Top • ${top.quotations} ใบเสนอราคา / ${top.services} สัญญาบริการ` : '-';
+
+        chipsEl.innerHTML = `
+          <div style="padding: 0.75rem 1rem; background:#f9fbff; border-radius:10px; border:1px solid #e5edf8;">
+            <div style="font-size: 0.75rem; color:#64748b; margin-bottom:0.25rem;">สรุปใบเสนอราคาและสัญญาบริการ</div>
+            <div style="font-size:1rem; font-weight:700; color:var(--primary-color);">${totalQ} ใบเสนอราคา / ${totalS} สัญญาบริการ</div>
+          </div>
+          <div style="padding: 0.75rem 1rem; background:#fff7e6; border-radius:10px; border:1px solid #fed7aa;">
+            <div style="font-size: 0.75rem; color:#92400e; margin-bottom:0.25rem;">Top Agent (ตามใบเสนอราคา)</div>
+            <div style="font-size:1rem; font-weight:700; color:#b45309;">${topText}</div>
+          </div>
+          <div style="padding: 0.75rem 1rem; background:#e0fcef; border-radius:10px; border:1px solid #bbf7d0;">
+            <div style="font-size: 0.75rem; color:#047857; margin-bottom:0.25rem;">อัตราการทำสัญญาบริการสำเร็จ</div>
+            <div style="font-size:1rem; font-weight:700; color:#047857;">${successRate.toFixed(1)}%</div>
+            <div style="font-size:0.78rem; font-weight:600; color:#047857; margin-top:0.15rem; opacity:0.95;">ใบเสนอราคา ${totalQ} / สัญญาบริการ ${totalS}</div>
+          </div>
+        `;
+      }
+
+      function renderTable(rows, rangeText) {
+        if (rangeEl) rangeEl.textContent = rangeText ? `ช่วงวันที่: ${rangeText}` : '';
+        if (!tableBody) return;
+        const sorted = rows.slice().sort((a, b) => b.quotations - a.quotations);
+        tableBody.innerHTML = sorted.map((r, i) => `
+          <tr>
+            <td style="text-align:center;">${i + 1}</td>
+            <td>${r.sale}${i === 0 ? ' 🏆' : ''}</td>
+            <td style="text-align:right;">${r.quotations}</td>
+            <td style="text-align:right;">${r.services}</td>
+          </tr>
+        `).join('');
+      }
+
+      let saleChart = null;
+      if (saleCanvas && hasChart) {
+        saleChart = new Chart(saleCanvas.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: [],
+            datasets: [
+              { label: 'จำนวนใบเสนอราคา', data: [], backgroundColor: 'rgba(31, 111, 178, 0.85)', borderWidth: 0 },
+              { label: 'จำนวนสัญญาบริการ', data: [], backgroundColor: 'rgba(255, 122, 26, 0.85)', borderWidth: 0 },
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom' }, tooltip: { enabled: true } },
+            scales: {
+              x: { grid: { display: false } },
+              y: { beginAtZero: true, ticks: { precision: 0 } }
+            }
+          }
+        });
+      }
+
+      function updateAgentCompare() {
+        if (!startEl || !endEl) return;
+
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const defaultStart = `${yyyy}-01-01`;
+        const defaultEnd = toYMD(today);
+
+        const startVal = startEl.value || defaultStart;
+        const endVal = endEl.value || defaultEnd;
+        const keys = monthRangeKeys(startVal, endVal);
+        const selected = getSelectedAgents();
+
+        const rows = selected.map(s => sumByAgent(s, keys));
+        renderChips(rows);
+        renderTable(rows, formatRange(startVal, endVal));
+
+        if (saleChart) {
+          saleChart.data.labels = rows.map(r => r.sale);
+          saleChart.data.datasets[0].data = rows.map(r => r.quotations);
+          saleChart.data.datasets[1].data = rows.map(r => r.services);
+          saleChart.update();
+        }
+      }
+
+      // Defaults for summary date range
+      (function initSummaryDateDefaults(){
+        if (!startEl || !endEl) return;
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        if (!startEl.value) startEl.value = `${yyyy}-01-01`;
+        if (!endEl.value) endEl.value = toYMD(today);
+      })();
+
+      // ========= Section 2: Model chart (month/year) =========
+      const modelCanvas = document.getElementById('modelHoursChart');
+      const modelStartEl = document.getElementById('modelStartDate');
+      const modelEndEl = document.getElementById('modelEndDate'); 
+
+      function getModelSeriesByRange(startDate, endDate) {
+        const sTime = Math.min(startDate.getTime(), endDate.getTime());
+        const eTime = Math.max(startDate.getTime(), endDate.getTime());
+        const sum = { LHE: 0, LPE: 0, RRE: 0 };
+
+        // derive from transactions (same dataset with Agent chart) to keep preview stable
+        saleForkTx.forEach((t) => {
+          const d = new Date(t.date);
+          const tt = d.getTime();
+          if (tt < sTime || tt > eTime) return;
+          if (sum[t.model] != null) sum[t.model] += (+t.qty || 0);
+        });
+
+        return { labels: ['LHE','LPE','RRE'], values: [sum.LHE, sum.LPE, sum.RRE] };
+      }
+
+      let modelChart = null;
+      if (modelCanvas && hasChart) {
+        modelChart = new Chart(modelCanvas.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: ['LHE','LPE','RRE'],
+            datasets: [{
+              label: 'จำนวนรถยกที่ทำสัญญา (คัน)',
+              data: [0,0,0],
+              borderWidth: 0,
+              backgroundColor: 'rgba(31, 111, 178, 0.85)'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: { enabled: true } },
+            scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { precision: 0 } } }
+          }
+        });
+      }
+
+      function updateModelChart() {
+        if (!modelChart) return;
+
+        // Default: first day of current month -> today
+        const today = new Date();
+        const defaultStart = new Date(today.getFullYear(), today.getMonth(), 1);
+
+        const s = safeDate(modelStartEl && modelStartEl.value) || defaultStart;
+        const e = safeDate(modelEndEl && modelEndEl.value) || today;
+
+        const series = getModelSeriesByRange(s, e);
+        modelChart.data.labels = series.labels;
+        modelChart.data.datasets[0].data = series.values;
+        modelChart.update();
+      }
+
+      // init default values so chart isn't empty
+      (function initModelDateDefaults(){
+        const today = new Date();
+        const start = new Date(today.getFullYear(), today.getMonth(), 1);
+        if (modelStartEl && !modelStartEl.value) modelStartEl.value = toYMD(start);
+        if (modelEndEl && !modelEndEl.value) modelEndEl.value = toYMD(today);
+      })();
+
+      if (modelStartEl) modelStartEl.addEventListener('change', updateModelChart);
+      if (modelEndEl) modelEndEl.addEventListener('change', updateModelChart);
+      updateModelChart();
+
+      // ========= Section 3: Forklifts per Agent (stacked by model) =========
+      const sfStartEl = document.getElementById('saleForkStartDate');
+      const sfEndEl = document.getElementById('saleForkEndDate');
+      const sfModeEl = document.getElementById('saleForkAgentFilter');
+      const saleForkCanvas = document.getElementById('saleForkliftChart');
+
+      // Add individual sale options into sfModeEl (so user can pick 1 sale)
+      function ensureAgentOptionsInForkFilter() {
+        if (!sfModeEl) return;
+        const existing = new Set(Array.from(sfModeEl.options).map(o => o.value));
+        sales.forEach((s) => {
+          if (existing.has(s)) return;
+          const opt = document.createElement('option');
+          opt.value = s;
+          opt.textContent = s;
+          sfModeEl.appendChild(opt);
+        });
+      }
+
+      let saleForkChart = null;
+      if (saleForkCanvas && hasChart) {
+        saleForkChart = new Chart(saleForkCanvas.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: [],
+            datasets: [
+              { label: 'LHE', data: [], backgroundColor: 'rgba(31, 111, 178, 0.85)', borderWidth: 0 },
+              { label: 'LPE', data: [], backgroundColor: 'rgba(255, 122, 26, 0.85)', borderWidth: 0 },
+              { label: 'RRE', data: [], backgroundColor: 'rgba(100, 116, 139, 0.45)', borderWidth: 0 }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: true, position: 'bottom' }, tooltip: { enabled: true } },
+            scales: {
+              x: { stacked: true, grid: { display: false } },
+              y: { stacked: true, beginAtZero: true, ticks: { precision: 0 } }
+            }
+          }
+        });
+      }
+
+      function getAgentsForForkChart() {
+        const mode = sfModeEl ? sfModeEl.value : 'ALL';
+        if (mode === '__use_main__') return getSelectedAgents();
+        if (mode === 'ALL') return sales.slice();
+        if (mode) return [mode];
+        return sales.slice();
+      }
+
+      function updateAgentForkChart() {
+        if (!saleForkChart) return;
+
+        const today = new Date();
+        const defaultStart = new Date(today.getFullYear(), today.getMonth(), 1);
+
+        const s = safeDate(sfStartEl && sfStartEl.value) || defaultStart;
+        const e = safeDate(sfEndEl && sfEndEl.value) || today;
+
+        const sTime = Math.min(s.getTime(), e.getTime());
+        const eTime = Math.max(s.getTime(), e.getTime());
+
+        const salesToShow = getAgentsForForkChart();
+        const agg = {};
+        salesToShow.forEach(sale => { agg[sale] = { LHE: 0, LPE: 0, RRE: 0 }; });
+
+        saleForkTx.forEach((item) => {
+          if (!agg[item.sale]) return;
+          const d = new Date(item.date);
+          const t = d.getTime();
+          if (t < sTime || t > eTime) return;
+          agg[item.sale][item.model] += (+item.qty || 0);
+        });
+
+        saleForkChart.data.labels = salesToShow;
+        saleForkChart.data.datasets[0].data = salesToShow.map(sale => agg[sale].LHE || 0);
+        saleForkChart.data.datasets[1].data = salesToShow.map(sale => agg[sale].LPE || 0);
+        saleForkChart.data.datasets[2].data = salesToShow.map(sale => agg[sale].RRE || 0);
+        saleForkChart.update();
+      }
+
+      // Defaults for forklift chart date range
+      (function initForkDateDefaults(){
+        if (sfStartEl && !sfStartEl.value) {
+          const today = new Date();
+          const start = new Date(today.getFullYear(), today.getMonth(), 1);
+          sfStartEl.value = toYMD(start);
+        }
+        if (sfEndEl && !sfEndEl.value) sfEndEl.value = toYMD(new Date());
+      })();
+
+      if (sfStartEl) sfStartEl.addEventListener('change', updateAgentForkChart);
+      if (sfEndEl) sfEndEl.addEventListener('change', updateAgentForkChart);
+      if (sfModeEl) sfModeEl.addEventListener('change', updateAgentForkChart);
+
+      // ========= Wire main buttons =========
+      if (applyBtn) applyBtn.addEventListener('click', () => { updateAgentCompare(); updateAgentForkChart();  updateForkliftSummary(startEl && startEl.value, endEl && endEl.value, getSelectedSales ? getSelectedSales() : (typeof getSelectedAgents==='function'?getSelectedAgents():[])); updateForkliftCompareChart(startEl && startEl.value, endEl && endEl.value, getSelectedSales ? getSelectedSales() : (typeof getSelectedAgents==='function'?getSelectedAgents():[])); });
+      if (resetBtn) resetBtn.addEventListener('click', () => {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        if (startEl) startEl.value = `${yyyy}-01-01`;
+        if (endEl) endEl.value = toYMD(today);
+
+        if (saleSelect) Array.from(saleSelect.options).forEach(o => o.selected = true);
+        if (saleDropdownList) Array.from(saleDropdownList.querySelectorAll('input[type=checkbox]')).forEach(cb => cb.checked = true);
         updateAgentDropdownLabel();
+
+        // reset forklift filter to follow main
+        if (sfModeEl) sfModeEl.value = '__use_main__';
+
         updateAgentCompare();
         updateAgentForkChart();
       });
+
+      // ========= Init everything =========
+      populateHiddenAgentSelect();
+      initAgentDropdown();
+
+    // ---------- Forklift Filters (date range + multi-select) ----------
+    const forkliftStartEl = document.getElementById('forkliftStartDate');
+    const forkliftEndEl = document.getElementById('forkliftEndDate');
+    const forkliftSelect = document.getElementById('forkliftMultiSelect');
+
+    const forkliftMultiDropdown = document.getElementById('forkliftDropdown');
+    const forkliftDropdownBtn = document.getElementById('forkliftDropdownBtn');
+    const forkliftDropdownPanel = document.getElementById('forkliftDropdownPanel');
+    const forkliftDropdownList = document.getElementById('forkliftDropdownList');
+    const forkliftSelectAllBtn = document.getElementById('forkliftSelectAllBtn');
+    const forkliftClearBtn = document.getElementById('forkliftClearBtn');
+
+    const forkliftUpdateBtn = document.getElementById('forkliftUpdateBtn');
+    const forkliftResetBtn = document.getElementById('forkliftResetBtn');
+
+    function getSelectedForkliftNames() {
+      if (!forkliftDropdownList) return [];
+      return Array.from(forkliftDropdownList.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
     }
-    if (saleClearAllBtn) {
-      saleClearAllBtn.addEventListener('click', () => {
-        Array.from(saleSelect.options).forEach(o => o.selected = false);
-        Array.from(saleDropdownList.querySelectorAll('input[type=checkbox]')).forEach(cb => cb.checked = false);
-        updateAgentDropdownLabel();
-        updateAgentCompare();
-        updateAgentForkChart();
+
+    function setForkliftBtnLabel() {
+      if (!forkliftDropdownBtn) return;
+      const selected = getSelectedForkliftNames();
+      const total = (sales || []).length;
+      let text = `เลือก Agent`;
+      if (!selected.length || selected.length === total) text = `เลือก Agent (ทั้งหมด)`;
+      else if (selected.length === 1) text = selected[0];
+      else text = `${selected.length} คน`;
+      forkliftDropdownBtn.innerHTML = `${text} <span class="mdrop-caret">▾</span>`;
+    }
+
+    function initForkliftDropdown() {
+      if (!forkliftMultiDropdown || !forkliftDropdownBtn || !forkliftDropdownPanel || !forkliftDropdownList || !forkliftSelect) return;
+
+      // seed dates from main filter (if any)
+      if (forkliftStartEl && startEl && startEl.value) forkliftStartEl.value = startEl.value;
+      if (forkliftEndEl && endEl && endEl.value) forkliftEndEl.value = endEl.value;
+
+      forkliftSelect.innerHTML = '';
+      forkliftDropdownList.innerHTML = '';
+
+      (sales || []).forEach((name) => {
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name;
+        opt.selected = true;
+        forkliftSelect.appendChild(opt);
+
+        const row = document.createElement('label');
+        row.className = 'mdrop-item';
+        row.innerHTML = `<input type="checkbox" checked value="${name}" /> <span>${name}</span>`;
+        forkliftDropdownList.appendChild(row);
       });
+
+      setForkliftBtnLabel();
+
+      const close = () => {
+        forkliftMultiDropdown.classList.remove('open');
+        forkliftDropdownBtn.setAttribute('aria-expanded', 'false');
+      };
+      const open = () => {
+        forkliftMultiDropdown.classList.add('open');
+        forkliftDropdownBtn.setAttribute('aria-expanded', 'true');
+      };
+
+      forkliftDropdownBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        forkliftMultiDropdown.classList.contains('open') ? close() : open();
+      });
+      forkliftDropdownPanel.addEventListener('click', (e) => e.stopPropagation());
+      document.addEventListener('click', () => close());
+
+      forkliftDropdownList.addEventListener('change', () => setForkliftBtnLabel());
+
+      if (forkliftSelectAllBtn) forkliftSelectAllBtn.addEventListener('click', () => {
+        Array.from(forkliftDropdownList.querySelectorAll('input[type=checkbox]')).forEach(cb => cb.checked = true);
+        setForkliftBtnLabel();
+      });
+      if (forkliftClearBtn) forkliftClearBtn.addEventListener('click', () => {
+        Array.from(forkliftDropdownList.querySelectorAll('input[type=checkbox]')).forEach(cb => cb.checked = false);
+        setForkliftBtnLabel();
+      });
+
+      const runUpdate = () => {
+        const s = forkliftStartEl ? forkliftStartEl.value : '';
+        const e = forkliftEndEl ? forkliftEndEl.value : '';
+        const sel = getSelectedForkliftNames();
+        if (typeof updateForkliftSummary === 'function') updateForkliftSummary(s, e, sel);
+        if (typeof updateForkliftCompareChart === 'function') updateForkliftCompareChart(s, e, sel);
+      };
+
+      if (forkliftUpdateBtn) forkliftUpdateBtn.addEventListener('click', runUpdate);
+
+      if (forkliftResetBtn) forkliftResetBtn.addEventListener('click', () => {
+        if (forkliftStartEl) forkliftStartEl.value = '';
+        if (forkliftEndEl) forkliftEndEl.value = '';
+        Array.from(forkliftDropdownList.querySelectorAll('input[type=checkbox]')).forEach(cb => cb.checked = true);
+        setForkliftBtnLabel();
+        runUpdate();
+      });
+
+      // first run
+      runUpdate();
     }
-  }
 
-  function sumByAgent(saleName, keys) {
-    let quotations = 0;
-    let services = 0;
-    const map = saleMonthly[saleName] || {};
-    keys.forEach((k) => {
-      const row = map[k];
-      if (!row) return;
-      const c = row.c || 0;
-      const u = row.u || 0;
-      quotations += Math.max(c, u);
-      services += Math.min(c, u);
-    });
-    return { sale: saleName, quotations, services };
-  }
+    initForkliftDropdown();
+      ensureAgentOptionsInForkFilter();
 
-  function renderChips(rows) {
-    if (!chipsEl) return;
-    const totalQ = rows.reduce((a, r) => a + r.quotations, 0);
-    const totalS = rows.reduce((a, r) => a + r.services, 0);
-    const avgQ = rows.length ? (totalQ / rows.length) : 0;
-    const avgS = rows.length ? (totalS / rows.length) : 0;
-    const top = rows.slice().sort((a, b) => b.quotations - a.quotations)[0];
-    const topText = top ? `${top.sale} 🏆 Top • ${top.quotations} ใบเสนอราคา / ${top.services} สัญญาบริการ` : '-';
+      updateAgentCompare();
+      updateModelChart();
+      updateAgentForkChart();
 
-    chipsEl.innerHTML = `
-      <div style="padding: 0.75rem 1rem; background:#f9fbff; border-radius:10px; border:1px solid #e5edf8;">
-        <div style="font-size: 0.75rem; color:#64748b; margin-bottom:0.25rem;">สรุปใบเสนอราคาและสัญญาบริการ</div>
-        <div style="font-size:1rem; font-weight:700; color:var(--primary-color);">${totalQ} ใบเสนอราคา / ${totalS} สัญญาบริการ</div>
+      // --- Forklift quotation vs service summary (uses quoteForkTx vs saleForkTx) ---
+      function inRangeISO(dateStr, startStr, endStr) {
+        if (!dateStr) return false;
+        if (startStr && dateStr < startStr) return false;
+        if (endStr && dateStr > endStr) return false;
+        return true;
+      }
+
+      function sumForkliftsBySale(saleName, startStr, endStr) {
+        let qFork = 0;
+        let sFork = 0;
+
+        quoteForkTx.forEach((t) => {
+          if (t.sale !== saleName) return;
+          if (!inRangeISO(t.date, startStr, endStr)) return;
+          qFork += (+t.qty || 0);
+        });
+
+        saleForkTx.forEach((t) => {
+          if (t.sale !== saleName) return;
+          if (!inRangeISO(t.date, startStr, endStr)) return;
+          sFork += (+t.qty || 0);
+        });
+
+        return { sale: saleName, qFork, sFork };
+      }
+
+      function renderForkliftChips(rows) {
+    const el = document.getElementById('forkliftSummaryChips');
+    if (!el) return;
+
+    const totalQ = rows.reduce((a, r) => a + r.qFork, 0);
+    const totalS = rows.reduce((a, r) => a + r.sFork, 0);
+    const successRate = totalQ ? ((totalS / totalQ) * 100) : 0;
+
+    const topQ = rows.slice().sort((a, b) => b.qFork - a.qFork)[0];
+    const topText = topQ ? `${topQ.sale} 🏆 Top • ${topQ.qFork} รถ(ใบเสนอราคา) / ${topQ.sFork} รถ(สัญญา)` : '-';
+
+    el.innerHTML = `
+      <div style="padding: 0.75rem 1rem; background:#f3f8ff; border-radius:12px; border:1px solid #dbeafe;">
+        <div style="font-size: 0.75rem; color:#64748b; margin-bottom:0.25rem;">สรุปช่วงวันที่เลือก (รวมทีม)</div>
+        <div style="font-size:0.95rem; font-weight:800; color:var(--primary-color);">${totalQ.toLocaleString()} รถในใบเสนอราคา / ${totalS.toLocaleString()} รถในสัญญา</div>
       </div>
-      <div style="padding: 0.75rem 1rem; background:#fff7e6; border-radius:10px; border:1px solid #fed7aa;">
-        <div style="font-size: 0.75rem; color:#92400e; margin-bottom:0.25rem;">Top Agent (ตามใบเสนอราคา)</div>
-        <div style="font-size:1rem; font-weight:700; color:#b45309;">${topText}</div>
+
+      <div style="padding: 0.75rem 1rem; background:#fff7ed; border-radius:12px; border:1px solid #fed7aa;">
+        <div style="font-size: 0.75rem; color:#9a3412; margin-bottom:0.25rem;">Top Performer</div>
+        <div style="font-size:0.95rem; font-weight:800; color:#c2410c;">${topText}</div>
+        <div style="font-size:0.78rem; color:#9a3412;">ตามช่วงวันที่เลือก</div>
       </div>
-      <div style="padding: 0.75rem 1rem; background:#e0fcef; border-radius:10px; border:1px solid #bbf7d0;">
-        <div style="font-size: 0.75rem; color:#047857; margin-bottom:0.25rem;">เฉลี่ยต่อคน</div>
-        <div style="font-size:1rem; font-weight:700; color:#047857;">${avgQ.toFixed(1)} ใบเสนอราคา / ${avgS.toFixed(1)} สัญญาบริการ</div>
+
+      <div style="padding: 0.75rem 1rem; background:#ecfdf5; border-radius:12px; border:1px solid #bbf7d0;">
+        <div style="font-size: 0.75rem; color:#065f46; margin-bottom:0.25rem;">อัตราการทำสัญญาบริการสำเร็จ</div>
+        <div style="font-size: 1.05rem; font-weight:900; color:#047857;">${successRate.toFixed(1)}%</div>
+        <div style="font-size:0.78rem; color:#065f46; font-weight:700;">ใบเสนอราคา ${totalQ.toLocaleString()} / สัญญาบริการ ${totalS.toLocaleString()}</div>
+      </div>
+
+      <div style="padding: 0.75rem 1rem; background:#ffffff; border-radius:12px; border:1px solid #e5edf8;">
+        <div style="font-size: 0.75rem; color:#64748b; margin-bottom:0.25rem;">รถยก (รวมทีม)</div>
+        <div style="display:flex; gap:0.6rem; align-items:baseline; flex-wrap:wrap;">
+          <div style="font-size:0.9rem; font-weight:800; color:var(--primary-color);">ใบเสนอราคา: ${totalQ.toLocaleString()}</div>
+          <div style="font-size:0.9rem; font-weight:800; color:var(--secondary-color);">สัญญา: ${totalS.toLocaleString()}</div>
+        </div>
+        <div style="font-size:0.78rem; color:#64748b;">คัน</div>
       </div>
     `;
-  }
 
-  function renderTable(rows, rangeText) {
-    if (rangeEl) rangeEl.textContent = rangeText ? `ช่วงวันที่: ${rangeText}` : '';
-    if (!tableBody) return;
-    const sorted = rows.slice().sort((a, b) => b.quotations - a.quotations);
-    tableBody.innerHTML = sorted.map((r, i) => `
-      <tr>
-        <td style="text-align:center;">${i + 1}</td>
-        <td>${r.sale}${i === 0 ? ' 🏆' : ''}</td>
-        <td style="text-align:right;">${r.quotations}</td>
-        <td style="text-align:right;">${r.services}</td>
-      </tr>
-    `).join('');
-  }
-
-  let saleChart = null;
-  if (saleCanvas && hasChart) {
-    saleChart = new Chart(saleCanvas.getContext('2d'), {
-      type: 'bar',
-      data: {
-        labels: [],
-        datasets: [
-          { label: 'จำนวนใบเสนอราคา', data: [], backgroundColor: 'rgba(31, 111, 178, 0.85)', borderWidth: 0 },
-          { label: 'จำนวนสัญญาบริการ', data: [], backgroundColor: 'rgba(255, 122, 26, 0.85)', borderWidth: 0 },
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { position: 'bottom' }, tooltip: { enabled: true } },
-        scales: {
-          x: { grid: { display: false } },
-          y: { beginAtZero: true, ticks: { precision: 0 } }
-        }
-      }
-    });
-  }
-
-  function updateAgentCompare() {
-    if (!startEl || !endEl) return;
-
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const defaultStart = `${yyyy}-01-01`;
-    const defaultEnd = toYMD(today);
-
-    const startVal = startEl.value || defaultStart;
-    const endVal = endEl.value || defaultEnd;
-    const keys = monthRangeKeys(startVal, endVal);
-    const selected = getSelectedAgents();
-
-    const rows = selected.map(s => sumByAgent(s, keys));
-    renderChips(rows);
-    renderTable(rows, formatRange(startVal, endVal));
-
-    if (saleChart) {
-      saleChart.data.labels = rows.map(r => r.sale);
-      saleChart.data.datasets[0].data = rows.map(r => r.quotations);
-      saleChart.data.datasets[1].data = rows.map(r => r.services);
-      saleChart.update();
     }
-  }
 
-  // Defaults for summary date range
-  (function initSummaryDateDefaults(){
-    if (!startEl || !endEl) return;
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    if (!startEl.value) startEl.value = `${yyyy}-01-01`;
-    if (!endEl.value) endEl.value = toYMD(today);
-  })();
+  function renderForkliftTable(rows) {
+        const tbody = document.getElementById('forkliftSummaryTbody');
+        if (!tbody) return;
 
-  // ========= Section 2: Model chart (month/year) =========
-  const modelCanvas = document.getElementById('modelHoursChart');
-  const modelStartEl = document.getElementById('modelStartDate');
-  const modelEndEl = document.getElementById('modelEndDate'); 
-
-  function getModelSeriesByRange(startDate, endDate) {
-    const sTime = Math.min(startDate.getTime(), endDate.getTime());
-    const eTime = Math.max(startDate.getTime(), endDate.getTime());
-    const sum = { LHE: 0, LPE: 0, RRE: 0 };
-
-    // derive from transactions (same dataset with Agent chart) to keep preview stable
-    saleForkTx.forEach((t) => {
-      const d = new Date(t.date);
-      const tt = d.getTime();
-      if (tt < sTime || tt > eTime) return;
-      if (sum[t.model] != null) sum[t.model] += (t.qty || 0);
-    });
-
-    return { labels: ['LHE','LPE','RRE'], values: [sum.LHE, sum.LPE, sum.RRE] };
-  }
-
-  let modelChart = null;
-  if (modelCanvas && hasChart) {
-    modelChart = new Chart(modelCanvas.getContext('2d'), {
-      type: 'bar',
-      data: {
-        labels: ['LHE','LPE','RRE'],
-        datasets: [{
-          label: 'จำนวนรถยกที่ทำสัญญา (คัน)',
-          data: [0,0,0],
-          borderWidth: 0,
-          backgroundColor: 'rgba(31, 111, 178, 0.85)'
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { display: false }, tooltip: { enabled: true } },
-        scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { precision: 0 } } }
+        const sorted = rows.slice().sort((a, b) => (b.sFork - a.sFork) || (b.qFork - a.qFork));
+        tbody.innerHTML = sorted.map((r, i) => {
+          const rate = r.qFork ? ((r.sFork / r.qFork) * 100) : 0;
+          return `
+            <tr>
+              <td style="text-align:center;">${i + 1}</td>
+              <td style="font-weight:700;">${r.sale}</td>
+              <td style="text-align:right;">${r.qFork.toLocaleString()}</td>
+              <td style="text-align:right;">${r.sFork.toLocaleString()}</td>
+              <td style="text-align:right; font-weight:800; color:var(--primary-color);">${rate.toFixed(1)}%</td>
+            </tr>
+          `;
+        }).join('');
       }
-    });
-  }
+      // ---------- Forklift compare chart (Quotation vs Service) ----------
+      const forkliftCompareCanvas = document.getElementById('forkliftCompareChart');
+      var forkliftCompareChart = null;
 
-  function updateModelChart() {
-    if (!modelChart) return;
+      if (forkliftCompareCanvas && hasChart) {
+        forkliftCompareChart = new Chart(forkliftCompareCanvas.getContext('2d'), {
+          type: 'bar',
+          data: { labels: [], datasets: [
+            { label: 'รถยกในใบเสนอราคา', data: [], backgroundColor: 'rgba(31, 111, 178, 0.85)', borderWidth: 0 },
+            { label: 'รถยกในสัญญาบริการ', data: [], backgroundColor: 'rgba(255, 122, 26, 0.85)', borderWidth: 0 }
+          ]},
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: true, position: 'bottom' }, tooltip: { enabled: true } },
+            scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+          }
 
-    // Default: first day of current month -> today
-    const today = new Date();
-    const defaultStart = new Date(today.getFullYear(), today.getMonth(), 1);
+        });
+      }
 
-    const s = safeDate(modelStartEl && modelStartEl.value) || defaultStart;
-    const e = safeDate(modelEndEl && modelEndEl.value) || today;
+            function renderForkliftCompareFallback(qTotal, sTotal) {
+        const host = document.getElementById('forkliftCompareFallback');
+        if (!host) return;
 
-    const series = getModelSeriesByRange(s, e);
-    modelChart.data.labels = series.labels;
-    modelChart.data.datasets[0].data = series.values;
-    modelChart.update();
-  }
+        const q = Number(qTotal) || 0;
+        const s = Number(sTotal) || 0;
+        const max = Math.max(q, s, 1);
 
-  // init default values so chart isn't empty
-  (function initModelDateDefaults(){
-    const today = new Date();
-    const start = new Date(today.getFullYear(), today.getMonth(), 1);
-    if (modelStartEl && !modelStartEl.value) modelStartEl.value = toYMD(start);
-    if (modelEndEl && !modelEndEl.value) modelEndEl.value = toYMD(today);
-  })();
+        const qPct = Math.round((q / max) * 100);
+        const sPct = Math.round((s / max) * 100);
 
-  if (modelStartEl) modelStartEl.addEventListener('change', updateModelChart);
-  if (modelEndEl) modelEndEl.addEventListener('change', updateModelChart);
-  updateModelChart();
+        host.innerHTML = `
+          <div class="chart-bars" style="height:180px; justify-content:flex-start; gap:2.0rem;">
+            <div class="chart-bar-col" style="flex:0 0 72px;">
+              <div class="chart-value">${q.toLocaleString()}</div>
+              <div class="chart-bar-outer" style="max-width:44px;">
+                <div class="chart-bar contracts" style="height:${qPct}%;"></div>
+              </div>
+              <div class="chart-label" style="width:72px;">รถยกใบเสนอราคา</div>
+            </div>
 
-  // ========= Section 3: Forklifts per Agent (stacked by model) =========
-  const sfStartEl = document.getElementById('saleForkStartDate');
-  const sfEndEl = document.getElementById('saleForkEndDate');
-  const sfModeEl = document.getElementById('saleForkAgentFilter');
-  const saleForkCanvas = document.getElementById('saleForkliftChart');
+            <div class="chart-bar-col" style="flex:0 0 72px;">
+              <div class="chart-value">${s.toLocaleString()}</div>
+              <div class="chart-bar-outer" style="max-width:44px;">
+                <div class="chart-bar revenue" style="height:${sPct}%;"></div>
+              </div>
+              <div class="chart-label" style="width:72px;">รถยกสัญญา</div>
+            </div>
+          </div>
+        `;
+      }
+      function sumForkQtyBySaleInRange(tx, sale, sTime, eTime) {
+        let total = 0;
+        tx.forEach((item) => {
+          if (item.sale !== sale) return;
+          const t = new Date(item.date).getTime();
+          if (t < sTime || t > eTime) return;
+          total += (+item.qty || 0);
+        });
+        return total;
+      }
 
-  // Add individual sale options into sfModeEl (so user can pick 1 sale)
-  function ensureAgentOptionsInForkFilter() {
-    if (!sfModeEl) return;
-    const existing = new Set(Array.from(sfModeEl.options).map(o => o.value));
-    sales.forEach((s) => {
-      if (existing.has(s)) return;
-      const opt = document.createElement('option');
-      opt.value = s;
-      opt.textContent = s;
-      sfModeEl.appendChild(opt);
-    });
-  }
+      function updateForkliftCompareChart(startStr, endStr, selectedSales) {
+        // หาก Chart.js ไม่พร้อม ให้แสดง fallback แทน
 
-  let saleForkChart = null;
-  if (saleForkCanvas && hasChart) {
-    saleForkChart = new Chart(saleForkCanvas.getContext('2d'), {
-      type: 'bar',
-      data: {
-        labels: [],
-        datasets: [
-          { label: 'LHE', data: [], backgroundColor: 'rgba(31, 111, 178, 0.85)', borderWidth: 0 },
-          { label: 'LPE', data: [], backgroundColor: 'rgba(255, 122, 26, 0.85)', borderWidth: 0 },
-          { label: 'RRE', data: [], backgroundColor: 'rgba(100, 116, 139, 0.45)', borderWidth: 0 }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { display: true }, tooltip: { enabled: true } },
-        scales: {
-          x: { stacked: true, grid: { display: false } },
-          y: { stacked: true, beginAtZero: true, ticks: { precision: 0 } }
+        const s = safeDate(startStr) || safeDate((startEl && startEl.value)) || new Date(new Date().getFullYear(), 0, 1);
+        const e = safeDate(endStr) || safeDate((endEl && endEl.value)) || new Date();
+        const sTime = Math.min(s.getTime(), e.getTime());
+        const eTime = Math.max(s.getTime(), e.getTime());
+
+        const names = (selectedSales && selectedSales.length) ? selectedSales : sales.slice();
+
+        const qData = names.map((n) => sumForkQtyBySaleInRange(quoteForkTx, n, sTime, eTime));
+        const sData = names.map((n) => sumForkQtyBySaleInRange(saleForkTx, n, sTime, eTime));
+
+        const qTotal = qData.reduce((a, b) => a + (Number(b) || 0), 0);
+        const sTotal = sData.reduce((a, b) => a + (Number(b) || 0), 0);
+        // ถ้า Chart.js พร้อม ให้ใช้กราฟ Chart.js (รูปแบบเดียวกับกราฟด้านบน)
+        const fallbackHost = document.getElementById('forkliftCompareFallback');
+        const forkliftCompareCanvas = document.getElementById('forkliftCompareChart');
+        if (forkliftCompareChart && typeof forkliftCompareChart.update === 'function') {
+          if (fallbackHost) fallbackHost.style.display = 'none';
+          if (forkliftCompareCanvas) forkliftCompareCanvas.style.display = 'block';
+
+          forkliftCompareChart.data.labels = names;
+          forkliftCompareChart.data.datasets[0].data = qData.map(v => Number(v) || 0);
+          forkliftCompareChart.data.datasets[1].data = sData.map(v => Number(v) || 0);
+          forkliftCompareChart.update();
+        } else {
+          // ถ้า Chart.js ไม่พร้อม ให้แสดง fallback แทน (ยังเห็นกราฟแน่นอน)
+          if (fallbackHost) fallbackHost.style.display = 'block';
+          if (forkliftCompareCanvas) if (forkliftCompareCanvas) forkliftCompareCanvas.style.display = 'none';
+          renderForkliftCompareFallback(qTotal, sTotal);
         }
+if (!forkliftCompareChart) return;
+        forkliftCompareChart.data.labels = names;
+        forkliftCompareChart.data.datasets[0].data = qData;
+        forkliftCompareChart.data.datasets[1].data = sData;
+        forkliftCompareChart.update();
       }
-    });
-  }
 
-  function getAgentsForForkChart() {
-    const mode = sfModeEl ? sfModeEl.value : 'ALL';
-    if (mode === '__use_main__') return getSelectedAgents();
-    if (mode === 'ALL') return sales.slice();
-    if (mode) return [mode];
-    return sales.slice();
-  }
 
-  function updateAgentForkChart() {
-    if (!saleForkChart) return;
 
-    const today = new Date();
-    const defaultStart = new Date(today.getFullYear(), today.getMonth(), 1);
-
-    const s = safeDate(sfStartEl && sfStartEl.value) || defaultStart;
-    const e = safeDate(sfEndEl && sfEndEl.value) || today;
-
-    const sTime = Math.min(s.getTime(), e.getTime());
-    const eTime = Math.max(s.getTime(), e.getTime());
-
-    const salesToShow = getAgentsForForkChart();
-    const agg = {};
-    salesToShow.forEach(sale => { agg[sale] = { LHE: 0, LPE: 0, RRE: 0 }; });
-
-    saleForkTx.forEach((item) => {
-      if (!agg[item.sale]) return;
-      const d = new Date(item.date);
-      const t = d.getTime();
-      if (t < sTime || t > eTime) return;
-      agg[item.sale][item.model] += (item.qty || 0);
-    });
-
-    saleForkChart.data.labels = salesToShow;
-    saleForkChart.data.datasets[0].data = salesToShow.map(sale => agg[sale].LHE || 0);
-    saleForkChart.data.datasets[1].data = salesToShow.map(sale => agg[sale].LPE || 0);
-    saleForkChart.data.datasets[2].data = salesToShow.map(sale => agg[sale].RRE || 0);
-    saleForkChart.update();
-  }
-
-  // Defaults for forklift chart date range
-  (function initForkDateDefaults(){
-    if (sfStartEl && !sfStartEl.value) {
-      const today = new Date();
-      const start = new Date(today.getFullYear(), today.getMonth(), 1);
-      sfStartEl.value = toYMD(start);
-    }
-    if (sfEndEl && !sfEndEl.value) sfEndEl.value = toYMD(new Date());
-  })();
-
-  if (sfStartEl) sfStartEl.addEventListener('change', updateAgentForkChart);
-  if (sfEndEl) sfEndEl.addEventListener('change', updateAgentForkChart);
-  if (sfModeEl) sfModeEl.addEventListener('change', updateAgentForkChart);
-
-  // ========= Wire main buttons =========
-  if (applyBtn) applyBtn.addEventListener('click', () => { updateAgentCompare(); updateAgentForkChart(); });
-  if (resetBtn) resetBtn.addEventListener('click', () => {
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    if (startEl) startEl.value = `${yyyy}-01-01`;
-    if (endEl) endEl.value = toYMD(today);
-
-    if (saleSelect) Array.from(saleSelect.options).forEach(o => o.selected = true);
-    if (saleDropdownList) Array.from(saleDropdownList.querySelectorAll('input[type=checkbox]')).forEach(cb => cb.checked = true);
-    updateAgentDropdownLabel();
-
-    // reset forklift filter to follow main
-    if (sfModeEl) sfModeEl.value = '__use_main__';
-
-    updateAgentCompare();
-    updateAgentForkChart();
+      function updateForkliftSummary(startStr, endStr, selectedSales) {
+        const names = (selectedSales && selectedSales.length) ? selectedSales : Object.keys(saleMonthly);
+        const rows = names.map((name) => sumForkliftsBySale(name, startStr, endStr));
+        renderForkliftChips(rows);
+        renderForkliftTable(rows);
+      }
+      // init forklift summary + forklift compare chart once
+      try {
+        const s0 = startEl && startEl.value;
+        const e0 = endEl && endEl.value;
+        const selected0 = (typeof getSelectedSales === 'function') ? getSelectedSales() : (typeof getSelectedAgents === 'function' ? getSelectedAgents() : []);
+        if (typeof updateForkliftSummary === 'function') updateForkliftSummary(s0, e0, selected0);
+        if (typeof updateForkliftCompareChart === 'function') updateForkliftCompareChart(s0, e0, selected0);
+      } catch (e) {}
   });
-
-  // ========= Init everything =========
-  populateHiddenAgentSelect();
-  initAgentDropdown();
-  ensureAgentOptionsInForkFilter();
-
-  updateAgentCompare();
-  updateModelChart();
-  updateAgentForkChart();
 });
 </script>
-
-
-
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   const dropdowns = document.querySelectorAll('.sale-dropdown');
@@ -1569,6 +2013,5 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 </script>
-
-</body>
+</div></body>
 </html>
